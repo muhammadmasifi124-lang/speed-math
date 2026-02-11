@@ -1,0 +1,1994 @@
+<!DOCTYPE html>
+<html lang="ku" dir="rtl">
+<head>
+    <meta name="google-site-verification" content="X0Jpijo-3NQ5lvj8EBRZTScYMpgCp8SMyioZ0qIvTis" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="سپیید ماس - پێشبڕکێی ژمێریاری خێرا">
+    <title>سپیید ماس ⚡ Speed Math (Artflo Edition)</title>
+    
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>⚡</text></svg>">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800;900&family=Noto+Sans+Arabic:wght@400;600;700;900&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-dark: #050505;
+            --card-bg: #0f0f11;
+            --primary: #6366f1;
+            --secondary: #ec4899;
+            --glass-border: rgba(255, 255, 255, 0.08);
+            --text-main: #ffffff;
+        }
+
+        * { font-family: 'Noto Sans Arabic', 'Inter', sans-serif; }
+        
+        body { 
+            margin: 0; padding: 0; 
+            background-color: var(--bg-dark);
+            background-image: radial-gradient(#1a1a1a 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--text-main);
+            overflow-x: hidden; min-height: 100vh;
+        }
+        
+        .glow-bg {
+            position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+            width: 80vw; height: 80vh;
+            background: radial-gradient(circle, rgba(99,102,241,0.08) 0%, rgba(236,72,153,0.05) 40%, transparent 70%);
+            z-index: -1; filter: blur(80px); pointer-events: none;
+        }
+
+        .glass {
+            background: rgba(20, 20, 25, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 40px rgba(165, 180, 252, 0.2);
+        }
+
+        .hero-title { 
+            font-family: 'Inter', sans-serif; 
+            font-weight: 900; 
+            letter-spacing: -0.04em; 
+            line-height: 0.95; 
+            text-transform: uppercase; 
+        }
+        
+        .outline-text { 
+            color: transparent; 
+            -webkit-text-stroke: 2px rgba(255, 255, 255, 0.3);
+            text-shadow: 0 0 20px rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-primary { 
+            background: white; 
+            color: black; 
+            border-radius: 999px; 
+            font-weight: 800; 
+            transition: all 0.3s; 
+            border: none; 
+        }
+        
+        .btn-primary:hover { 
+            transform: scale(1.05); 
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.4); 
+        }
+
+        .btn-glass { 
+            background: rgba(255,255,255,0.05); 
+            border: 1px solid rgba(255,255,255,0.1); 
+            color: white; 
+            border-radius: 12px; 
+            transition: all 0.2s; 
+        }
+        
+        .btn-glass:hover { 
+            background: rgba(255,255,255,0.1); 
+            border-color: rgba(255,255,255,0.3); 
+        }
+
+        .game-card {
+            background: var(--card-bg); 
+            border: 1px solid var(--glass-border); 
+            border-radius: 24px; 
+            padding: 2rem;
+            position: relative; 
+            overflow: hidden; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: space-between;
+        }
+        
+        .game-card:hover { 
+            transform: translateY(-8px); 
+            border-color: rgba(99, 102, 241, 0.5); 
+            box-shadow: 0 20px 40px -15px rgba(99, 102, 241, 0.3); 
+            background: #131316; 
+        }
+        
+        .card-icon { 
+            font-size: 3.5rem; 
+            margin-bottom: 1rem; 
+            filter: drop-shadow(0 0 15px rgba(255,255,255,0.2)); 
+        }
+
+        input { 
+            background: rgba(0,0,0,0.3) !important; 
+            border: 1px solid var(--glass-border) !important; 
+            color: white !important; 
+            transition: all 0.3s !important; 
+        }
+        
+        input:focus { 
+            border-color: var(--primary) !important; 
+            box-shadow: 0 0 0 2px rgba(99,102,241,0.2) !important; 
+            outline: none !important; 
+        }
+
+        @keyframes fade-in { 
+            from { opacity: 0; transform: translateY(20px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
+        
+        .animate-fade-in { 
+            animation: fade-in 0.6s ease-out forwards; 
+        }
+
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(255, 136, 0, 0.5); }
+            50% { box-shadow: 0 0 40px rgba(255, 136, 0, 0.8); }
+        }
+
+        .streak-glow {
+            animation: pulse-glow 2s ease-in-out infinite;
+        }
+        
+        ::-webkit-scrollbar { width: 8px; height: 8px; }
+        ::-webkit-scrollbar-track { background: var(--bg-dark); }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #444; }
+        
+        .modal-overlay { 
+            position: fixed; 
+            inset: 0; 
+            background: rgba(0,0,0,0.85); 
+            backdrop-filter: blur(12px); 
+            z-index: 100; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+        }
+
+        .nav-link {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: all 0.2s;
+            color: rgba(255,255,255,0.7);
+            font-weight: 500;
+        }
+
+        .nav-link:hover {
+            background: rgba(255,255,255,0.1);
+            color: white;
+        }
+
+        .nav-link.active {
+            background: rgba(99, 102, 241, 0.2);
+            color: white;
+        }
+
+        .version-badge {
+            display: inline-block;
+            border: 1px solid rgba(99, 102, 241, 0.3);
+            background: rgba(99, 102, 241, 0.1);
+            border-radius: 999px;
+            padding: 0.375rem 1rem;
+            font-size: 0.875rem;
+            color: rgb(165, 180, 252);
+            font-weight: 600;
+        }
+
+        .difficulty-card {
+            position: relative;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: all 0.3s;
+            cursor: pointer;
+            text-align: left;
+            overflow: hidden;
+        }
+
+        .difficulty-card:hover {
+            background: rgba(255,255,255,0.1);
+            border-color: rgba(99, 102, 241, 0.5);
+            transform: translateY(-4px);
+        }
+
+        .difficulty-glow {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 8rem;
+            height: 8rem;
+            background: rgba(99, 102, 241, 0.1);
+            filter: blur(2rem);
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+
+        .difficulty-card:hover .difficulty-glow {
+            background: rgba(99, 102, 241, 0.2);
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 1rem;
+            padding: 1.5rem;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            background: rgba(255,255,255,0.06);
+            border-color: rgba(255,255,255,0.2);
+            transform: translateY(-2px);
+        }
+
+        .hollow-number {
+            color: transparent;
+            -webkit-text-stroke: 3px #ffffff;
+            text-stroke: 3px #ffffff;
+            text-shadow: 0 0 40px rgba(255, 255, 255, 0.3),
+                         0 0 80px rgba(99, 102, 241, 0.2);
+            font-weight: 900;
+            letter-spacing: -0.05em;
+        }
+
+        .hollow-number-operator {
+            color: transparent;
+            -webkit-text-stroke: 3px #6366f1;
+            text-stroke: 3px #6366f1;
+            text-shadow: 0 0 40px rgba(99, 102, 241, 0.5),
+                         0 0 80px rgba(99, 102, 241, 0.3);
+            font-weight: 900;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect, useRef } = React;
+
+        // Kurdish Words Dictionary
+        const kurdishDictionary = new Set([
+            'دڵ', 'گوڵ', 'کار', 'خەو', 'نان', 'ئاو', 'باڵ', 'رەنگ', 'دەست', 'سەر', 'بەر', 'نەو', 'ناو',
+            'دار', 'کوێ', 'کەس', 'ژان', 'خان', 'ماڵ', 'ژیر', 'تۆپ', 'گەڵ', 'ڕێگ', 'چاو', 'گوێ',
+            'دەم', 'لوت', 'پێ', 'شار', 'باخ', 'کێو', 'ئێل', 'باف', 'گەر', 'هات', 'چوو', 'بوو',
+            'کتێب', 'قسە', 'بەرد', 'خانوو', 'دەریا', 'کێوی', 'باخچە', 'ژیان', 'خەون', 'سەرو', 'دەرگا',
+            'مناڵ', 'براوە', 'خوشک', 'دایک', 'باوک', 'کوڕ', 'کچ', 'قوتاب', 'مامۆستا', 'دۆست',
+            'ئاسمان', 'خۆر', 'مانگ', 'ئەستێرە', 'باران', 'بەفر', 'تاو', 'شەمال', 'خاک',
+            'پارە', 'زێڕ', 'زیو', 'بەها', 'نرخ', 'کڕین', 'فرۆشتن', 'بازاڕ', 'دوکان',
+            'زانکۆ', 'قوتابخانە', 'خوێندن', 'نووسین', 'خوێنەر', 'نووسەر', 'هونەر', 'وێنە',
+            'کتێبخانە', 'پەرلەمان', 'حکومەت', 'کۆمەڵگا', 'شارستانی', 'دارستان', 'ڕووبار',
+        ]);
+
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyDMmsPQD7Zfouzax5WHviPYbnqX_ozkLJ0",
+            authDomain: "mathspeed-436cb.firebaseapp.com",
+            databaseURL: "https://mathspeed-436cb-default-rtdb.firebaseio.com",
+            projectId: "mathspeed-436cb",
+            storageBucket: "mathspeed-436cb.firebasestorage.app",
+            messagingSenderId: "449753089064",
+            appId: "1:449753089064:web:db907f16c547fced4c611d",
+            measurementId: "G-FPSZ0V9HP3"
+        };
+
+        if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const database = firebase.database();
+        const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+        // Difficulty Settings
+        const difficultySettings = {
+            easy: { 
+                label: 'Easy', 
+                labelKurdish: 'ئاسان', 
+                range: { min: 1, max: 10 }, 
+                operations: ['multiplication'], 
+                timeLimit: 90, 
+                description: 'Perfect for beginners',
+                descriptionKurdish: 'گونجاو بۆ دەستپێکەران',
+                pointsMultiplier: 1, 
+                icon: '🌱' 
+            },
+            normal: { 
+                label: 'Normal', 
+                labelKurdish: 'ئاسایی', 
+                range: { min: 10, max: 50 }, 
+                multiplicationRange: { min: 11, max: 15 }, 
+                operations: ['addition', 'multiplication'], 
+                timeLimit: 60, 
+                description: 'Good challenge',
+                descriptionKurdish: 'تەحەدیی باش',
+                pointsMultiplier: 1.5, 
+                icon: '⚡' 
+            },
+            hard: { 
+                label: 'Hard', 
+                labelKurdish: 'سەخت', 
+                range: { min: 10, max: 100 }, 
+                operations: ['addition', 'subtraction', 'multiplication', 'division'], 
+                timeLimit: 60, 
+                description: 'Serious challenge',
+                descriptionKurdish: 'تەحەدیی سەخت',
+                pointsMultiplier: 2, 
+                icon: '🔥' 
+            },
+            expert: { 
+                label: 'Expert', 
+                labelKurdish: 'پسپۆڕ', 
+                range: { min: 50, max: 200 }, 
+                operations: ['mixed'], 
+                timeLimit: 120, 
+                description: 'For math masters',
+                descriptionKurdish: 'بۆ مامۆستایانی ماتماتیک',
+                pointsMultiplier: 2.5, 
+                icon: '💎' 
+            },
+            genius: { 
+                label: 'Genius', 
+                labelKurdish: '١٠٠ IQ', 
+                range: { min: 100, max: 999 }, 
+                operations: ['mixed'], 
+                timeLimit: 150, 
+                description: 'Ultimate challenge',
+                descriptionKurdish: 'تەحەدیی کۆتایی',
+                pointsMultiplier: 3, 
+                icon: '🏆' 
+            },
+        };
+
+        const operationSymbols = { 
+            addition: '+', 
+            subtraction: '-', 
+            multiplication: '×', 
+            division: '÷' 
+        };
+
+        const randomInt = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
+        const calculatePoints = (difficulty, streak) => Math.round(10 * difficultySettings[difficulty].pointsMultiplier + Math.floor(streak / 5) * 5);
+
+        const generateProblem = (difficulty) => {
+            const settings = difficultySettings[difficulty];
+            const { min, max } = settings.range;
+            const operations = settings.operations;
+            let operation = operations[Math.floor(Math.random() * operations.length)];
+            
+            if (operation === 'mixed') {
+                operation = ['addition', 'subtraction', 'multiplication', 'division'][Math.floor(Math.random() * 4)];
+            }
+
+            let num1, num2, correctAnswer;
+            
+            switch (operation) {
+                case 'addition': 
+                    num1 = randomInt(min, max); 
+                    num2 = randomInt(min, max); 
+                    correctAnswer = num1 + num2; 
+                    break;
+                case 'subtraction': 
+                    num1 = randomInt(min, max); 
+                    num2 = randomInt(min, num1); 
+                    correctAnswer = num1 - num2; 
+                    break;
+                case 'multiplication': 
+                    const mRange = settings.multiplicationRange || { min, max }; 
+                    num1 = randomInt(mRange.min, Math.min(mRange.max, 20)); 
+                    num2 = randomInt(mRange.min, Math.min(mRange.max, 20)); 
+                    correctAnswer = num1 * num2; 
+                    break;
+                case 'division': 
+                    num2 = randomInt(Math.max(min, 2), Math.min(max, 20)); 
+                    correctAnswer = randomInt(min, Math.min(max, 50)); 
+                    num1 = num2 * correctAnswer; 
+                    break;
+                default: 
+                    num1 = randomInt(min, max); 
+                    num2 = randomInt(min, max); 
+                    correctAnswer = num1 + num2; 
+                    operation = 'addition';
+            }
+            
+            return { 
+                num1, 
+                num2, 
+                operation, 
+                correctAnswer, 
+                displayOperation: operationSymbols[operation] 
+            };
+        };
+
+        // Main App Component
+        const SpeedMath = () => {
+            // Auth States
+            const [user, setUser] = useState(null);
+            const [authMode, setAuthMode] = useState('login');
+            const [email, setEmail] = useState('');
+            const [password, setPassword] = useState('');
+            const [displayName, setDisplayName] = useState('');
+            const [authLoading, setAuthLoading] = useState(false);
+            const [authError, setAuthError] = useState('');
+            
+            // Game States
+            const [gameState, setGameState] = useState('auth');
+            const [gameMode, setGameMode] = useState('speed');
+            const [difficulty, setDifficulty] = useState('normal');
+            const [activeModal, setActiveModal] = useState(false);
+
+            // Game Logic States
+            const [score, setScore] = useState(0);
+            const [streak, setStreak] = useState(0);
+            const [bestStreak, setBestStreak] = useState(0);
+            const [timeLeft, setTimeLeft] = useState(60);
+            const [currentProblem, setCurrentProblem] = useState(null);
+            const [userAnswer, setUserAnswer] = useState('');
+            const [questionsAnswered, setQuestionsAnswered] = useState(0);
+            const [correctAnswers, setCorrectAnswers] = useState(0);
+            const [feedback, setFeedback] = useState(null);
+            
+            // Leaderboards
+            const [leaderboard, setLeaderboard] = useState([]);
+            const [memoryLeaderboard, setMemoryLeaderboard] = useState([]);
+            const [raceLeaderboard, setRaceLeaderboard] = useState([]);
+            const [sudokuLeaderboard, setSudokuLeaderboard] = useState([]);
+            const [wordWheelLeaderboard, setWordWheelLeaderboard] = useState([]);
+            const [wordSearchLeaderboard, setWordSearchLeaderboard] = useState([]);
+            
+            // Sub-game States
+            const [memoryCards, setMemoryCards] = useState([]);
+            const [flippedCards, setFlippedCards] = useState([]);
+            const [matchedPairs, setMatchedPairs] = useState([]);
+            const [moves, setMoves] = useState(0);
+            const [memoryScore, setMemoryScore] = useState(0);
+            const [playerScore, setPlayerScore] = useState(0);
+            const [computerScore, setComputerScore] = useState(0);
+            const [raceTarget, setRaceTarget] = useState(10);
+            const [raceWinner, setRaceWinner] = useState(null);
+            const [sudokuBoard, setSudokuBoard] = useState([]);
+            const [sudokuSolution, setSudokuSolution] = useState([]);
+            const [selectedCell, setSelectedCell] = useState(null);
+            const [sudokuMistakes, setSudokuMistakes] = useState(0);
+            const [wheelLetters, setWheelLetters] = useState([]);
+            const [centerLetter, setCenterLetter] = useState('');
+            const [currentWord, setCurrentWord] = useState('');
+            const [foundWords, setFoundWords] = useState([]);
+            const [wheelScore, setWheelScore] = useState(0);
+            const [selectedIndices, setSelectedIndices] = useState([]);
+            const [searchGrid, setSearchGrid] = useState([]);
+            const [searchWords, setSearchWords] = useState([]);
+            const [foundSearchWords, setFoundSearchWords] = useState([]);
+            const [selectedCells, setSelectedCells] = useState([]);
+            const [searchScore, setSearchScore] = useState(0);
+            
+            const inputRef = useRef(null);
+            const timerRef = useRef(null);
+
+            // Auth Monitor
+            useEffect(() => {
+                const unsubscribe = auth.onAuthStateChanged((user) => {
+                    if (user) { 
+                        setUser(user); 
+                        setGameState('menu'); 
+                        loadGlobalLeaderboard(); 
+                    } else { 
+                        setUser(null); 
+                        setGameState('auth'); 
+                    }
+                });
+                return () => unsubscribe();
+            }, []);
+
+            // Load Leaderboards
+            const loadGlobalLeaderboard = () => {
+                const refs = {
+                    'leaderboard': setLeaderboard,
+                    'leaderboard_memory': setMemoryLeaderboard,
+                    'leaderboard_race': setRaceLeaderboard,
+                    'leaderboard_sudoku': setSudokuLeaderboard,
+                    'leaderboard_wordwheel': setWordWheelLeaderboard,
+                    'leaderboard_wordsearch': setWordSearchLeaderboard
+                };
+                
+                Object.entries(refs).forEach(([path, setter]) => {
+                    database.ref(path)
+                        .orderByChild(path.includes('race') || path.includes('sudoku') ? 'time' : 'score')
+                        .limitToLast(50)
+                        .on('value', snapshot => {
+                            if (snapshot.val()) {
+                                const entries = Object.entries(snapshot.val())
+                                    .map(([id, entry]) => ({ ...entry, id }))
+                                    .sort((a, b) => 
+                                        (path.includes('race') || path.includes('sudoku')) 
+                                            ? a.time - b.time 
+                                            : b.score - a.score
+                                    );
+                                setter(entries);
+                            }
+                        });
+                });
+            };
+
+            // Auth Functions
+            const handleEmailAuth = async (e) => {
+                e.preventDefault();
+                setAuthLoading(true);
+                setAuthError('');
+                
+                try {
+                    if (authMode === 'register') {
+                        const result = await auth.createUserWithEmailAndPassword(email, password);
+                        if (displayName) {
+                            await result.user.updateProfile({ displayName });
+                        }
+                        await createUserProfile(result.user);
+                    } else {
+                        await auth.signInWithEmailAndPassword(email, password);
+                    }
+                } catch (error) {
+                    setAuthError(error.message);
+                } finally {
+                    setAuthLoading(false);
+                }
+            };
+
+            const handleGoogleAuth = async () => {
+                setAuthLoading(true);
+                setAuthError('');
+                
+                try {
+                    const result = await auth.signInWithPopup(googleProvider);
+                    await createUserProfile(result.user);
+                } catch (error) {
+                    setAuthError(error.message);
+                } finally {
+                    setAuthLoading(false);
+                }
+            };
+
+            const createUserProfile = async (user) => {
+                const userRef = database.ref(`users/${user.uid}`);
+                const snapshot = await userRef.once('value');
+                
+                if (!snapshot.exists()) {
+                    await userRef.set({
+                        uid: user.uid,
+                        email: user.email,
+                        displayName: user.displayName || 'Player',
+                        createdAt: Date.now()
+                    });
+                }
+            };
+
+            const handleLogout = async () => {
+                await auth.signOut();
+                setGameState('auth');
+            };
+
+            // Game Start Functions
+            const startGame = (diff = difficulty) => {
+                if (gameMode === 'speed') {
+                    const settings = difficultySettings[diff];
+                    setScore(0);
+                    setStreak(0);
+                    setBestStreak(0);
+                    setTimeLeft(settings.timeLimit);
+                    setQuestionsAnswered(0);
+                    setCorrectAnswers(0);
+                    setFeedback(null);
+                    setGameState('playing');
+                    generateNewProblem(diff);
+                } else if (gameMode === 'memory') {
+                    startMemoryGame(diff);
+                } else if (gameMode === 'race') {
+                    startRaceGame(diff);
+                } else if (gameMode === 'sudoku') {
+                    startSudokuGame(diff);
+                } else if (gameMode === 'wordwheel') {
+                    startWordWheelGame(diff);
+                } else if (gameMode === 'wordsearch') {
+                    startWordSearchGame(diff);
+                }
+            };
+
+            const openGameSetup = (mode) => {
+                setGameMode(mode);
+                setActiveModal(true);
+            };
+
+            const selectDifficultyAndStart = (diff) => {
+                setDifficulty(diff);
+                setActiveModal(false);
+                startGame(diff);
+            };
+
+            // Memory Game
+            const startMemoryGame = (diff) => {
+                const gridSizes = { easy: 12, normal: 16, hard: 20 };
+                const numPairs = (gridSizes[diff] || 16) / 2;
+                const pairs = [];
+                
+                for (let i = 0; i < numPairs; i++) {
+                    const n1 = randomInt(1, 9);
+                    const n2 = randomInt(1, 9);
+                    pairs.push(
+                        { id: i * 2, value: `${n1}×${n2}`, type: 'q', pairId: i },
+                        { id: i * 2 + 1, value: (n1 * n2).toString(), type: 'a', pairId: i }
+                    );
+                }
+                
+                setMemoryCards(pairs.sort(() => Math.random() - 0.5));
+                setFlippedCards([]);
+                setMatchedPairs([]);
+                setMoves(0);
+                setMemoryScore(0);
+                setTimeLeft(180);
+                setGameState('playing');
+            };
+
+            const flipCard = (id) => {
+                if (flippedCards.length === 2 || flippedCards.includes(id) || 
+                    matchedPairs.includes(memoryCards.find(c => c.id === id).pairId)) {
+                    return;
+                }
+                
+                const newFlipped = [...flippedCards, id];
+                setFlippedCards(newFlipped);
+                
+                if (newFlipped.length === 2) {
+                    setMoves(moves + 1);
+                    const card1 = memoryCards.find(c => c.id === newFlipped[0]);
+                    const card2 = memoryCards.find(c => c.id === newFlipped[1]);
+                    
+                    if (card1.pairId === card2.pairId) {
+                        setTimeout(() => {
+                            setMatchedPairs([...matchedPairs, card1.pairId]);
+                            setFlippedCards([]);
+                            setMemoryScore(s => s + 100);
+                            
+                            if (matchedPairs.length + 1 === memoryCards.length / 2) {
+                                setTimeout(endMemoryGame, 500);
+                            }
+                        }, 500);
+                    } else {
+                        setTimeout(() => setFlippedCards([]), 1000);
+                    }
+                }
+            };
+
+            const endMemoryGame = async () => {
+                setGameState('results');
+                setScore(memoryScore);
+                
+                await database.ref('leaderboard_memory').push({
+                    userId: user.uid,
+                    userName: user.displayName,
+                    difficulty,
+                    score: memoryScore,
+                    moves,
+                    timestamp: Date.now()
+                });
+            };
+
+            // Race Game
+            const startRaceGame = (diff) => {
+                const targets = { easy: 5, normal: 10, hard: 15, expert: 20, genius: 25 };
+                setRaceTarget(targets[diff]);
+                setPlayerScore(0);
+                setComputerScore(0);
+                setRaceWinner(null);
+                setTimeLeft(0);
+                setGameState('playing');
+                generateNewProblem(diff);
+            };
+
+            const checkRaceAnswer = () => {
+                if (!userAnswer || feedback) return;
+
+                const isCorrect = parseInt(userAnswer) === currentProblem.correctAnswer;
+
+                if (isCorrect) {
+                    const newPlayerScore = playerScore + 1;
+                    setPlayerScore(newPlayerScore);
+                    setFeedback({ type: 'correct' });
+                    
+                    if (newPlayerScore >= raceTarget) {
+                        setRaceWinner('player');
+                        setTimeout(() => endRaceGame('player'), 1000);
+                        return;
+                    }
+                    
+                    setTimeout(() => {
+                        const delays = { easy: 3000, normal: 2000, hard: 1500, expert: 1000, genius: 800 };
+                        const computerDelay = delays[difficulty];
+                        
+                        setTimeout(() => {
+                            if (raceWinner) return;
+                            
+                            const newComputerScore = computerScore + 1;
+                            setComputerScore(newComputerScore);
+                            
+                            if (newComputerScore >= raceTarget) {
+                                setRaceWinner('computer');
+                                setTimeout(() => endRaceGame('computer'), 1000);
+                                return;
+                            }
+                            
+                            generateNewProblem();
+                        }, computerDelay);
+                    }, 500);
+                } else {
+                    setFeedback({ type: 'wrong', correct: currentProblem.correctAnswer });
+                }
+
+                setTimeout(() => {
+                    if (!raceWinner) generateNewProblem();
+                }, 1000);
+            };
+
+            const endRaceGame = async (winner) => {
+                setGameState('results');
+                
+                if (winner === 'player') {
+                    await database.ref('leaderboard_race').push({
+                        userId: user.uid,
+                        userName: user.displayName,
+                        difficulty,
+                        time: Math.floor(timeLeft),
+                        winner,
+                        playerScore,
+                        computerScore,
+                        timestamp: Date.now()
+                    });
+                }
+            };
+
+            // Sudoku Game
+            const startSudokuGame = (diff) => {
+                const generateBoard = () => {
+                    const board = Array(9).fill(null).map(() => Array(9).fill(0));
+                    
+                    for (let box = 0; box < 3; box++) {
+                        const nums = [1, 2, 3, 4, 5, 6, 7, 8, 9].sort(() => Math.random() - 0.5);
+                        for (let i = 0; i < 3; i++) {
+                            for (let j = 0; j < 3; j++) {
+                                board[box * 3 + i][box * 3 + j] = nums[i * 3 + j];
+                            }
+                        }
+                    }
+                    
+                    const solve = (b) => {
+                        for (let r = 0; r < 9; r++) {
+                            for (let c = 0; c < 9; c++) {
+                                if (b[r][c] === 0) {
+                                    for (let n = 1; n <= 9; n++) {
+                                        if (isValidSudoku(b, r, c, n)) {
+                                            b[r][c] = n;
+                                            if (solve(b)) return true;
+                                            b[r][c] = 0;
+                                        }
+                                    }
+                                    return false;
+                                }
+                            }
+                        }
+                        return true;
+                    };
+                    
+                    solve(board);
+                    return board;
+                };
+
+                const isValidSudoku = (b, r, c, n) => {
+                    for (let x = 0; x < 9; x++) {
+                        if (b[r][x] === n || b[x][c] === n) return false;
+                    }
+                    const sr = r - r % 3, sc = c - c % 3;
+                    for (let i = 0; i < 3; i++) {
+                        for (let j = 0; j < 3; j++) {
+                            if (b[sr + i][sc + j] === n) return false;
+                        }
+                    }
+                    return true;
+                };
+                
+                const solution = generateBoard();
+                const puzzle = solution.map(r => [...r]);
+                const toRemove = { easy: 30, normal: 40, hard: 50, expert: 55, genius: 60 }[diff];
+                
+                let removed = 0;
+                while (removed < toRemove) {
+                    const r = randomInt(0, 8), c = randomInt(0, 8);
+                    if (puzzle[r][c] !== 0) {
+                        puzzle[r][c] = 0;
+                        removed++;
+                    }
+                }
+                
+                setSudokuBoard(puzzle);
+                setSudokuSolution(solution);
+                setSelectedCell(null);
+                setSudokuMistakes(0);
+                setTimeLeft(0);
+                window.initialSudokuBoard = puzzle.map(r => [...r]);
+                setGameState('playing');
+            };
+
+            const handleSudokuCell = (r, c) => {
+                if (!window.initialSudokuBoard || window.initialSudokuBoard[r][c] !== 0) return;
+                setSelectedCell({ row: r, col: c });
+            };
+
+            const handleSudokuNumber = (num) => {
+                if (!selectedCell) return;
+                
+                const { row, col } = selectedCell;
+                const prev = sudokuBoard[row][col];
+                const newBoard = sudokuBoard.map(r => [...r]);
+                newBoard[row][col] = num;
+                setSudokuBoard(newBoard);
+                
+                if (num !== 0 && num !== sudokuSolution[row][col]) {
+                    if (prev === 0 || prev === sudokuSolution[row][col]) {
+                        setSudokuMistakes(sudokuMistakes + 1);
+                    }
+                }
+                
+                if (isSudokuComplete(newBoard)) {
+                    setTimeout(endSudokuGame, 500);
+                }
+            };
+
+            const isSudokuComplete = (b) => {
+                for (let i = 0; i < 9; i++) {
+                    for (let j = 0; j < 9; j++) {
+                        if (b[i][j] !== sudokuSolution[i][j]) return false;
+                    }
+                }
+                return true;
+            };
+
+            const endSudokuGame = async () => {
+                setGameState('results');
+                const finalScore = Math.max(0, 10000 - (timeLeft * 10) - (sudokuMistakes * 100));
+                setScore(finalScore);
+                
+                await database.ref('leaderboard_sudoku').push({
+                    userId: user.uid,
+                    userName: user.displayName,
+                    difficulty,
+                    time: timeLeft,
+                    mistakes: sudokuMistakes,
+                    score: finalScore,
+                    timestamp: Date.now()
+                });
+            };
+
+            // Word Wheel Game
+            const startWordWheelGame = (diff) => {
+                const kurdishLetters = ['ئ', 'ا', 'ب', 'پ', 'ت', 'ج', 'چ', 'ح', 'خ', 'د', 'ر', 'ڕ', 'ز', 'ژ', 'س', 'ش', 'ع', 'غ', 'ف', 'ڤ', 'ق', 'ک', 'گ', 'ل', 'ڵ', 'م', 'ن', 'و', 'ۆ', 'ه', 'ھ', 'ە', 'ی', 'ێ'];
+                const shuffled = [...kurdishLetters].sort(() => Math.random() - 0.5);
+                
+                setCenterLetter(shuffled[0]);
+                setWheelLetters(shuffled.slice(1, 8));
+                setFoundWords([]);
+                setCurrentWord('');
+                setWheelScore(0);
+                setSelectedIndices([]);
+                setTimeLeft(180);
+                setGameState('playing');
+            };
+
+            const handleLetterClick = (l, i) => {
+                if (selectedIndices.includes(i)) return;
+                setCurrentWord(currentWord + l);
+                setSelectedIndices([...selectedIndices, i]);
+            };
+
+            const handleCenterClick = () => {
+                setCurrentWord(currentWord + centerLetter);
+                setSelectedIndices([...selectedIndices, -1]);
+            };
+
+            const clearCurrentWord = () => {
+                setCurrentWord('');
+                setSelectedIndices([]);
+            };
+
+            const submitWord = () => {
+                if (currentWord.length < 3 || 
+                    !currentWord.includes(centerLetter) || 
+                    foundWords.includes(currentWord) || 
+                    !kurdishDictionary.has(currentWord)) {
+                    setFeedback({ type: 'wrong' });
+                    setTimeout(() => setFeedback(null), 1000);
+                    clearCurrentWord();
+                    return;
+                }
+                
+                const pts = currentWord.length >= 7 ? 15 : currentWord.length;
+                setFoundWords([...foundWords, currentWord]);
+                setWheelScore(wheelScore + pts);
+                setFeedback({ type: 'correct', message: `+${pts}` });
+                setTimeout(() => setFeedback(null), 1000);
+                clearCurrentWord();
+            };
+
+            const endWordWheelGame = async () => {
+                setGameState('results');
+                
+                await database.ref('leaderboard_wordwheel').push({
+                    userId: user.uid,
+                    userName: user.displayName,
+                    score: wheelScore,
+                    wordsFound: foundWords.length,
+                    difficulty,
+                    timestamp: Date.now()
+                });
+            };
+
+            // Word Search Game
+            const startWordSearchGame = (diff) => {
+                const sz = { easy: 10, normal: 12, hard: 15, expert: 18, genius: 20 }[diff] || 12;
+                const nw = { easy: 5, normal: 7, hard: 10, expert: 12, genius: 15 }[diff] || 7;
+                const wordList = Array.from(kurdishDictionary).filter(w => w.length >= 3 && w.length <= sz - 2);
+                const selectedWords = [];
+                
+                for (let i = 0; i < nw && wordList.length > 0; i++) {
+                    const randomIndex = Math.floor(Math.random() * wordList.length);
+                    selectedWords.push(wordList[randomIndex]);
+                    wordList.splice(randomIndex, 1);
+                }
+                
+                const grid = Array(sz).fill(null).map(() => Array(sz).fill(''));
+                
+                const canPlace = (g, w, r, c, d) => {
+                    const directions = [[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0],[-1,-1],[-1,1]];
+                    const [dr, dc] = directions[d];
+                    
+                    for (let i = 0; i < w.length; i++) {
+                        const nr = r + dr * i, nc = c + dc * i;
+                        if (nr < 0 || nr >= sz || nc < 0 || nc >= sz || 
+                            (g[nr][nc] !== '' && g[nr][nc] !== w[i])) {
+                            return false;
+                        }
+                    }
+                    return true;
+                };
+                
+                const place = (g, w, r, c, d) => {
+                    const directions = [[0,1],[1,0],[1,1],[1,-1],[0,-1],[-1,0],[-1,-1],[-1,1]];
+                    const [dr, dc] = directions[d];
+                    for (let i = 0; i < w.length; i++) {
+                        g[r + dr * i][c + dc * i] = w[i];
+                    }
+                };
+                
+                selectedWords.forEach(w => {
+                    let placed = false, attempts = 0;
+                    while (!placed && attempts < 100) {
+                        const d = randomInt(0, 7);
+                        const r = randomInt(0, sz - 1);
+                        const c = randomInt(0, sz - 1);
+                        if (canPlace(grid, w, r, c, d)) {
+                            place(grid, w, r, c, d);
+                            placed = true;
+                        }
+                        attempts++;
+                    }
+                });
+                
+                const alpha = 'ئاەبتجحخدرڕزژسشصضطعغفڤقکگلڵمنهوۆوویی';
+                for (let i = 0; i < sz; i++) {
+                    for (let j = 0; j < sz; j++) {
+                        if (grid[i][j] === '') {
+                            grid[i][j] = alpha[Math.floor(Math.random() * alpha.length)];
+                        }
+                    }
+                }
+                
+                setSearchGrid(grid);
+                setSearchWords(selectedWords);
+                setFoundSearchWords([]);
+                setSelectedCells([]);
+                setSearchScore(0);
+                setTimeLeft(diff === 'easy' ? 300 : diff === 'normal' ? 240 : diff === 'hard' ? 180 : 120);
+                setGameState('playing');
+            };
+
+            const handleSearchCellClick = (r, c) => {
+                const k = `${r}-${c}`;
+                setSelectedCells(
+                    selectedCells.some(cell => cell.key === k)
+                        ? selectedCells.filter(cell => cell.key !== k)
+                        : [...selectedCells, { row: r, col: c, key: k }]
+                );
+            };
+
+            const checkSelectedWord = () => {
+                if (selectedCells.length < 3) return;
+                
+                const word = selectedCells.map(c => searchGrid[c.row][c.col]).join('');
+                
+                if (searchWords.includes(word) && !foundSearchWords.includes(word)) {
+                    const newFound = [...foundSearchWords, word];
+                    setFoundSearchWords(newFound);
+                    setSearchScore(s => s + word.length * 10);
+                    setSelectedCells([]);
+                    
+                    if (newFound.length === searchWords.length) {
+                        setTimeout(() => endWordSearchGame(searchScore + word.length * 10), 500);
+                    }
+                }
+            };
+
+            const endWordSearchGame = async (finalScore) => {
+                setGameState('results');
+                setScore(finalScore);
+                
+                await database.ref('leaderboard_wordsearch').push({
+                    userId: user.uid,
+                    userName: user.displayName,
+                    difficulty,
+                    score: finalScore,
+                    wordsFound: foundSearchWords.length,
+                    timestamp: Date.now()
+                });
+            };
+
+            // Speed Math Functions
+            const generateNewProblem = (diff = difficulty) => {
+                setCurrentProblem(generateProblem(diff));
+                setUserAnswer('');
+                setFeedback(null);
+                setTimeout(() => inputRef.current?.focus(), 100);
+            };
+
+            const checkAnswer = () => {
+                if (!userAnswer || feedback) return;
+
+                const isCorrect = parseInt(userAnswer) === currentProblem.correctAnswer;
+                setQuestionsAnswered(q => q + 1);
+
+                if (isCorrect) {
+                    const newStreak = streak + 1;
+                    setStreak(newStreak);
+                    setBestStreak(Math.max(bestStreak, newStreak));
+                    setCorrectAnswers(c => c + 1);
+                    const points = calculatePoints(difficulty, newStreak);
+                    setScore(s => s + points);
+                    setFeedback({ type: 'correct', points });
+                } else {
+                    setStreak(0);
+                    setFeedback({ type: 'wrong', correct: currentProblem.correctAnswer });
+                }
+
+                setTimeout(() => generateNewProblem(), 1000);
+            };
+
+            const endGame = async () => {
+                setGameState('results');
+                const accuracy = questionsAnswered > 0 
+                    ? Math.round((correctAnswers / questionsAnswered) * 100) 
+                    : 0;
+                
+                await database.ref('leaderboard').push({
+                    userId: user.uid,
+                    userName: user.displayName,
+                    difficulty,
+                    score,
+                    accuracy,
+                    streak: bestStreak,
+                    timestamp: Date.now()
+                });
+            };
+
+            // Timer Effect
+            useEffect(() => {
+                if (gameState === 'playing') {
+                    timerRef.current = setTimeout(() => {
+                        if (gameMode === 'race' || gameMode === 'sudoku') {
+                            setTimeLeft(t => t + 1);
+                        } else if (timeLeft > 0) {
+                            setTimeLeft(t => t - 1);
+                        } else if (timeLeft === 0) {
+                            if (gameMode === 'wordwheel') endWordWheelGame();
+                            else if (gameMode === 'wordsearch') endWordSearchGame(searchScore);
+                            else endGame();
+                        }
+                    }, 1000);
+                }
+                return () => clearTimeout(timerRef.current);
+            }, [gameState, timeLeft, gameMode]);
+
+            // Auto-check answer
+            useEffect(() => {
+                if (userAnswer && currentProblem && !feedback && 
+                    gameState === 'playing' && gameMode !== 'race' && 
+                    userAnswer.toString().length === currentProblem.correctAnswer.toString().length) {
+                    setTimeout(checkAnswer, 150);
+                }
+            }, [userAnswer]);
+
+            // ===================
+            // UI RENDERING
+            // ===================
+
+            // Auth Screen
+            if (gameState === 'auth') {
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 relative">
+                        <div className="glow-bg"></div>
+                        <div className="glass rounded-3xl p-8 max-w-md w-full animate-fade-in">
+                            <h1 className="text-5xl font-black mb-8 text-center">
+                                <span className="text-white">SPEED</span>{' '}
+                                <span className="text-indigo-500">MATH</span>
+                            </h1>
+                            
+                            <form onSubmit={handleEmailAuth} className="space-y-4">
+                                {authMode === 'register' && (
+                                    <input
+                                        type="text"
+                                        placeholder="Name"
+                                        value={displayName}
+                                        onChange={(e) => setDisplayName(e.target.value)}
+                                        className="w-full p-4 rounded-xl"
+                                    />
+                                )}
+                                
+                                <input
+                                    type="email"
+                                    placeholder="Email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    required
+                                    className="w-full p-4 rounded-xl"
+                                />
+                                
+                                <input
+                                    type="password"
+                                    placeholder="Password"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    required
+                                    className="w-full p-4 rounded-xl"
+                                />
+                                
+                                {authError && (
+                                    <div className="text-red-400 text-sm text-center bg-red-900/20 p-2 rounded">
+                                        {authError}
+                                    </div>
+                                )}
+                                
+                                <button
+                                    type="submit"
+                                    disabled={authLoading}
+                                    className="w-full btn-primary py-4 text-lg mt-2"
+                                >
+                                    {authLoading ? '...' : (authMode === 'login' ? 'Login' : 'Register')}
+                                </button>
+                            </form>
+                            
+                            <div className="flex justify-between items-center mt-6 text-sm">
+                                <button
+                                    onClick={() => setAuthMode(authMode === 'login' ? 'register' : 'login')}
+                                    className="text-slate-400 hover:text-white transition-colors"
+                                >
+                                    {authMode === 'login' ? 'Create Account' : 'Login instead'}
+                                </button>
+                                
+                                <button
+                                    onClick={handleGoogleAuth}
+                                    className="text-white flex items-center gap-2 bg-white/10 px-4 py-2 rounded-lg hover:bg-white/20"
+                                >
+                                    Google
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                );
+            }
+
+            // Menu Screen
+            if (gameState === 'menu') {
+                const currentLeaderboard = 
+                    gameMode === 'speed' ? leaderboard :
+                    gameMode === 'memory' ? memoryLeaderboard :
+                    gameMode === 'race' ? raceLeaderboard :
+                    gameMode === 'sudoku' ? sudokuLeaderboard :
+                    gameMode === 'wordsearch' ? wordSearchLeaderboard :
+                    wordWheelLeaderboard;
+
+                return (
+                    <div className="min-h-screen p-4 md:p-8 relative">
+                        <div className="glow-bg"></div>
+                        
+                        {/* Navigation Bar */}
+                        <nav className="flex items-center justify-between max-w-7xl mx-auto mb-12 glass rounded-full px-6 py-4 sticky top-4 z-50 animate-fade-in">
+                            <div className="flex items-center gap-8">
+                                <div className="flex items-center gap-2 font-bold text-xl">
+                                    <span className="text-indigo-500">⚡</span> Speed Math
+                                </div>
+                                
+                                <div className="hidden md:flex items-center gap-2">
+                                    <button 
+                                        onClick={() => setGameState('menu')}
+                                        className="nav-link active"
+                                    >
+                                        Home
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('speed')}
+                                        className="nav-link"
+                                    >
+                                        Speed
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('memory')}
+                                        className="nav-link"
+                                    >
+                                        Memory
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('race')}
+                                        className="nav-link"
+                                    >
+                                        Race
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('sudoku')}
+                                        className="nav-link"
+                                    >
+                                        Sudoku
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('wordwheel')}
+                                        className="nav-link"
+                                    >
+                                        Wheel
+                                    </button>
+                                    <button 
+                                        onClick={() => openGameSetup('wordsearch')}
+                                        className="nav-link"
+                                    >
+                                        Search
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <div className="flex items-center gap-4">
+                                <div className="hidden sm:block text-right">
+                                    <div className="text-xs text-slate-400">Player</div>
+                                    <div className="text-sm font-bold">{user?.displayName}</div>
+                                </div>
+                                
+                                <button 
+                                    onClick={handleLogout}
+                                    className="btn-glass p-2 rounded-full"
+                                >
+                                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </nav>
+
+                        <div className="max-w-7xl mx-auto">
+                            {/* Hero Section */}
+                            <div className="text-center mb-16 animate-fade-in">
+                                <div className="version-badge mb-6">
+                                    Version 2.0 - Artflo Edition
+                                </div>
+                                
+                                <h1 className="hero-title text-5xl md:text-8xl mb-6">
+                                    <span className="block outline-text mb-2">MASTER YOUR</span>
+                                    <span className="gradient-text">MATH SKILLS</span>
+                                </h1>
+                                
+                                <p className="text-slate-400 text-lg max-w-2xl mx-auto">
+                                    Challenge yourself with multiple game modes and difficulty levels
+                                </p>
+                            </div>
+
+                            {/* Game Cards Grid */}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-20 animate-fade-in">
+                                {/* Speed Math - Large Card */}
+                                <div 
+                                    onClick={() => openGameSetup('speed')}
+                                    className="game-card md:col-span-2 group border-indigo-500/30"
+                                >
+                                    <div className="absolute top-0 right-0 p-32 bg-indigo-600/10 blur-3xl rounded-full group-hover:bg-indigo-600/20 transition-all"></div>
+                                    <div>
+                                        <div className="card-icon">⚡</div>
+                                        <h2 className="text-3xl font-bold mb-2">Speed Math</h2>
+                                        <p className="text-slate-400">Rapid fire calculations against the clock</p>
+                                    </div>
+                                </div>
+
+                                {/* Race Mode - Tall Card */}
+                                <div 
+                                    onClick={() => openGameSetup('race')}
+                                    className="game-card md:row-span-2 bg-gradient-to-b from-[#1a1a20] to-[#0f0f11] border-green-500/30"
+                                >
+                                    <div>
+                                        <div className="card-icon">🏁</div>
+                                        <h2 className="text-2xl font-bold mb-2">Race Mode</h2>
+                                        <p className="text-slate-400 text-sm">Compete against the computer</p>
+                                    </div>
+                                    <div className="mt-auto text-6xl text-center opacity-30 group-hover:opacity-100 transition-opacity">
+                                        🏎️
+                                    </div>
+                                </div>
+
+                                {/* Memory Game */}
+                                <div 
+                                    onClick={() => openGameSetup('memory')}
+                                    className="game-card border-pink-500/30"
+                                >
+                                    <div className="card-icon">🧠</div>
+                                    <h3 className="text-xl font-bold">Memory Game</h3>
+                                    <p className="text-slate-400 text-sm">Match math problems</p>
+                                </div>
+
+                                {/* Sudoku */}
+                                <div 
+                                    onClick={() => openGameSetup('sudoku')}
+                                    className="game-card border-purple-500/30"
+                                >
+                                    <div className="card-icon">🧩</div>
+                                    <h3 className="text-xl font-bold">Sudoku</h3>
+                                    <p className="text-slate-400 text-sm">Classic logic puzzle</p>
+                                </div>
+
+                                {/* Word Wheel */}
+                                <div 
+                                    onClick={() => openGameSetup('wordwheel')}
+                                    className="game-card border-yellow-500/30"
+                                >
+                                    <div className="card-icon">⚙️</div>
+                                    <h3 className="text-xl font-bold">Word Wheel</h3>
+                                    <p className="text-slate-400 text-sm">Kurdish word game</p>
+                                </div>
+
+                                {/* Word Search */}
+                                <div 
+                                    onClick={() => openGameSetup('wordsearch')}
+                                    className="game-card border-blue-500/30"
+                                >
+                                    <div className="card-icon">🔍</div>
+                                    <h3 className="text-xl font-bold">Word Search</h3>
+                                    <p className="text-slate-400 text-sm">Find hidden words</p>
+                                </div>
+                            </div>
+
+                            {/* Leaderboard Section */}
+                            {currentLeaderboard.length > 0 && (
+                                <div className="glass rounded-3xl p-8 mb-8 animate-fade-in">
+                                    <h2 className="text-3xl font-bold mb-6 flex items-center gap-3">
+                                        <span className="text-indigo-500">🏆</span>
+                                        Leaderboard: {gameMode.toUpperCase()}
+                                    </h2>
+                                    
+                                    <div className="space-y-2 max-h-96 overflow-y-auto pr-2">
+                                        {currentLeaderboard.slice(0, 15).map((entry, index) => (
+                                            <div
+                                                key={entry.id}
+                                                className="flex items-center justify-between p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors border border-white/5"
+                                            >
+                                                <div className="flex items-center gap-4">
+                                                    <div className={`w-8 h-8 flex items-center justify-center rounded-full font-bold ${
+                                                        index === 0 ? 'bg-yellow-500 text-black' :
+                                                        index === 1 ? 'bg-slate-300 text-black' :
+                                                        index === 2 ? 'bg-amber-700 text-white' :
+                                                        'bg-slate-800 text-slate-400'
+                                                    }`}>
+                                                        {index + 1}
+                                                    </div>
+                                                    
+                                                    <div>
+                                                        <div className="font-bold text-lg">{entry.userName}</div>
+                                                        <div className="text-xs text-slate-400 capitalize flex items-center gap-2">
+                                                            <span>{entry.difficulty}</span>
+                                                            {entry.streak && (
+                                                                <>
+                                                                    <span>•</span>
+                                                                    <span className="flex items-center gap-1">
+                                                                        <span>🔥</span>
+                                                                        <span className="text-orange-400">{entry.streak}</span>
+                                                                    </span>
+                                                                </>
+                                                            )}
+                                                            {entry.accuracy && (
+                                                                <>
+                                                                    <span>•</span>
+                                                                    <span className="text-green-400">{entry.accuracy}%</span>
+                                                                </>
+                                                            )}
+                                                            <span>•</span>
+                                                            <span>{new Date(entry.timestamp).toLocaleDateString()}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div className="text-right">
+                                                    <div className="text-xl font-bold text-indigo-400">
+                                                        {gameMode === 'race' && entry.time 
+                                                            ? `${Math.floor(entry.time / 60)}:${(entry.time % 60).toString().padStart(2, '0')}` 
+                                                            : entry.score
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {/* Difficulty Modal */}
+                        {activeModal && (
+                            <div 
+                                className="modal-overlay animate-fade-in" 
+                                onClick={() => setActiveModal(false)}
+                            >
+                                <div 
+                                    className="glass p-8 rounded-3xl max-w-2xl w-full m-4 text-center border-indigo-500/40 relative overflow-hidden"
+                                    onClick={e => e.stopPropagation()}
+                                >
+                                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-indigo-500 to-pink-500"></div>
+                                    
+                                    <h2 className="text-4xl font-black mb-2 uppercase">{gameMode}</h2>
+                                    <p className="text-slate-400 mb-8">Select difficulty to start immediately</p>
+                                    
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                        {Object.keys(difficultySettings).map((diff) => (
+                                            <button
+                                                key={diff}
+                                                onClick={() => selectDifficultyAndStart(diff)}
+                                                className="difficulty-card"
+                                            >
+                                                <div className="difficulty-glow"></div>
+                                                <div className="relative z-10">
+                                                    <div className="text-3xl mb-2">{difficultySettings[diff].icon}</div>
+                                                    <div className="font-bold text-xl mb-1">{difficultySettings[diff].label}</div>
+                                                    <div className="text-xs text-slate-400">{difficultySettings[diff].description}</div>
+                                                </div>
+                                            </button>
+                                        ))}
+                                    </div>
+                                    
+                                    <button 
+                                        onClick={() => setActiveModal(false)}
+                                        className="mt-8 text-slate-500 hover:text-white transition-colors"
+                                    >
+                                        Cancel
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                );
+            }
+
+            // Playing Screen
+            if (gameState === 'playing') {
+                return (
+                    <div className="min-h-screen flex flex-col items-center p-4 relative overflow-hidden">
+                        <div className="glow-bg"></div>
+                        
+                        {/* Top Bar */}
+                        <div className="w-full max-w-6xl mx-auto flex justify-between items-center mb-8 z-10 glass rounded-full p-4 mt-4">
+                            <button
+                                onClick={() => {
+                                    if (window.confirm('Exit game?')) setGameState('menu');
+                                }}
+                                className="btn-glass p-3 rounded-full"
+                            >
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                                </svg>
+                            </button>
+                            
+                            <div className="font-mono text-xl text-indigo-400">
+                                {Math.floor(timeLeft / 60)}:{(timeLeft % 60).toString().padStart(2, '0')}
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                                {gameMode === 'speed' && streak > 0 && (
+                                    <div className="flex items-center gap-2 bg-orange-500/20 px-3 py-2 rounded-full border border-orange-500/50 streak-glow">
+                                        <span className="text-xl">🔥</span>
+                                        <span className="font-bold text-orange-400">{streak}</span>
+                                    </div>
+                                )}
+                                
+                                <div className="font-bold text-white bg-indigo-600/20 px-4 py-2 rounded-full border border-indigo-500/50">
+                                    {gameMode === 'race' ? `${playerScore} - ${computerScore}` : score}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="w-full max-w-4xl mx-auto z-10 animate-fade-in">
+                            {/* Speed Math UI */}
+                            {gameMode === 'speed' && currentProblem && (
+                                <div className="text-center mt-20">
+                                    <div className="text-7xl md:text-9xl font-black mb-12 flex justify-center gap-6">
+                                        <span className="hollow-number">{currentProblem.num1}</span>
+                                        <span className="hollow-number-operator">{currentProblem.displayOperation}</span>
+                                        <span className="hollow-number">{currentProblem.num2}</span>
+                                    </div>
+                                    
+                                    <input
+                                        ref={inputRef}
+                                        type="number"
+                                        value={userAnswer}
+                                        onChange={(e) => setUserAnswer(e.target.value)}
+                                        onKeyPress={(e) => {
+                                            if (e.key === 'Enter') checkAnswer();
+                                        }}
+                                        className="w-64 text-center text-5xl font-bold bg-transparent border-b-4 border-slate-700 focus:border-indigo-500 outline-none text-white py-4 mx-auto block mb-8"
+                                        autoFocus
+                                    />
+                                    
+                                    {feedback && (
+                                        <div className={`text-2xl font-bold ${
+                                            feedback.type === 'correct' ? 'text-green-400' : 'text-red-400'
+                                        }`}>
+                                            {feedback.type === 'correct' ? `+${feedback.points}` : 'Wrong!'}
+                                        </div>
+                                    )}
+                                    
+                                    {/* Desktop Keyboard */}
+                                    <div className="hidden md:grid grid-cols-3 gap-3 max-w-xs mx-auto mt-8">
+                                        {[7, 8, 9, 4, 5, 6, 1, 2, 3].map(n => (
+                                            <button
+                                                key={n}
+                                                onClick={() => setUserAnswer(prev => prev + n)}
+                                                className="bg-slate-800/50 hover:bg-indigo-600 border border-slate-700 p-4 rounded-xl text-2xl font-bold transition-all"
+                                            >
+                                                {n}
+                                            </button>
+                                        ))}
+                                        <button
+                                            onClick={() => setUserAnswer(prev => prev.slice(0, -1))}
+                                            className="bg-red-900/30 hover:bg-red-900/50 border border-red-800 text-red-400 p-4 rounded-xl transition-all"
+                                        >
+                                            ⌫
+                                        </button>
+                                        <button
+                                            onClick={() => setUserAnswer(prev => prev + '0')}
+                                            className="bg-slate-800/50 hover:bg-indigo-600 border border-slate-700 p-4 rounded-xl text-2xl font-bold transition-all"
+                                        >
+                                            0
+                                        </button>
+                                        <button
+                                            onClick={checkAnswer}
+                                            className="bg-green-600/30 hover:bg-green-600/50 border border-green-700 text-green-400 p-4 rounded-xl transition-all font-bold"
+                                        >
+                                            ✓
+                                        </button>
+                                    </div>
+
+                                    {/* Mobile Keyboard */}
+                                    <div className="grid grid-cols-3 gap-2 max-w-xs mx-auto md:hidden">
+                                        {[7, 8, 9, 4, 5, 6, 1, 2, 3].map(n => (
+                                            <button
+                                                key={n}
+                                                onClick={() => setUserAnswer(prev => prev + n)}
+                                                className="bg-slate-800 p-4 rounded text-xl font-bold"
+                                            >
+                                                {n}
+                                            </button>
+                                        ))}
+                                        <button
+                                            onClick={() => setUserAnswer(prev => prev.slice(0, -1))}
+                                            className="bg-red-900/50 text-red-300 p-4 rounded"
+                                        >
+                                            ⌫
+                                        </button>
+                                        <button
+                                            onClick={() => setUserAnswer(prev => prev + '0')}
+                                            className="bg-slate-800 p-4 rounded text-xl font-bold"
+                                        >
+                                            0
+                                        </button>
+                                        <button
+                                            onClick={checkAnswer}
+                                            className="bg-green-900/50 text-green-300 p-4 rounded"
+                                        >
+                                            ✓
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Memory Game UI */}
+                            {gameMode === 'memory' && (
+                                <div className="grid grid-cols-4 gap-4">
+                                    {memoryCards.map(c => (
+                                        <div
+                                            key={c.id}
+                                            onClick={() => flipCard(c.id)}
+                                            className="aspect-square cursor-pointer transition-all duration-500"
+                                        >
+                                            <div className={`w-full h-full rounded-2xl flex items-center justify-center text-xl font-bold border border-white/10 ${
+                                                flippedCards.includes(c.id) || matchedPairs.includes(c.pairId)
+                                                    ? 'bg-indigo-600 text-white'
+                                                    : 'bg-[#1a1a20] hover:bg-[#252530]'
+                                            }`}>
+                                                {flippedCards.includes(c.id) || matchedPairs.includes(c.pairId) ? c.value : '?'}
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {/* Race Game UI */}
+                            {gameMode === 'race' && currentProblem && (
+                                <div className="text-center">
+                                    <div className="glass p-8 rounded-3xl mb-8">
+                                        <div className="flex justify-between mb-2 text-sm text-slate-400">
+                                            <span>You</span>
+                                            <span>Target: {raceTarget}</span>
+                                            <span>CPU</span>
+                                        </div>
+                                        <div className="relative h-4 bg-slate-800 rounded-full overflow-hidden">
+                                            <div
+                                                className="absolute left-0 h-full bg-green-500 transition-all"
+                                                style={{ width: `${(playerScore / raceTarget) * 50}%` }}
+                                            ></div>
+                                            <div
+                                                className="absolute right-0 h-full bg-red-500 transition-all"
+                                                style={{ width: `${(computerScore / raceTarget) * 50}%` }}
+                                            ></div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="text-6xl font-bold mb-8">
+                                        {currentProblem.num1} {currentProblem.displayOperation} {currentProblem.num2} = ?
+                                    </div>
+                                    
+                                    <input
+                                        ref={inputRef}
+                                        type="number"
+                                        value={userAnswer}
+                                        onChange={(e) => setUserAnswer(e.target.value)}
+                                        className="w-48 text-center text-4xl p-4 rounded-xl mx-auto block mb-4"
+                                    />
+                                    
+                                    <button
+                                        onClick={checkRaceAnswer}
+                                        className="btn-primary px-8 py-3"
+                                    >
+                                        Submit
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* Sudoku UI */}
+                            {gameMode === 'sudoku' && (
+                                <div className="flex flex-col md:flex-row gap-8 justify-center items-start">
+                                    <div className="grid grid-cols-9 gap-0 border-2 border-indigo-500/50 rounded-lg overflow-hidden mx-auto">
+                                        {sudokuBoard.map((row, r) =>
+                                            row.map((cell, c) => (
+                                                <div
+                                                    key={`${r}-${c}`}
+                                                    onClick={() => handleSudokuCell(r, c)}
+                                                    className={`w-10 h-10 md:w-12 md:h-12 flex items-center justify-center border border-white/5 cursor-pointer text-lg font-bold ${
+                                                        selectedCell?.row === r && selectedCell?.col === c
+                                                            ? 'bg-indigo-600/50'
+                                                            : ''
+                                                    } ${
+                                                        window.initialSudokuBoard && window.initialSudokuBoard[r][c] !== 0
+                                                            ? 'text-slate-500'
+                                                            : 'text-white'
+                                                    } ${
+                                                        c % 3 === 2 && c !== 8
+                                                            ? 'border-r-2 border-r-indigo-500/30'
+                                                            : ''
+                                                    } ${
+                                                        r % 3 === 2 && r !== 8
+                                                            ? 'border-b-2 border-b-indigo-500/30'
+                                                            : ''
+                                                    }`}
+                                                >
+                                                    {cell || ''}
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-3 gap-2 mx-auto">
+                                        {[1, 2, 3, 4, 5, 6, 7, 8, 9].map(n => (
+                                            <button
+                                                key={n}
+                                                onClick={() => handleSudokuNumber(n)}
+                                                className="w-16 h-16 bg-slate-800 hover:bg-indigo-600 rounded-xl font-bold text-xl transition-colors"
+                                            >
+                                                {n}
+                                            </button>
+                                        ))}
+                                        <button
+                                            onClick={() => handleSudokuNumber(0)}
+                                            className="col-span-3 bg-red-900/30 text-red-400 py-3 rounded-xl"
+                                        >
+                                            Clear
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Word Wheel UI */}
+                            {gameMode === 'wordwheel' && (
+                                <div className="text-center">
+                                    <div className="relative w-64 h-64 mx-auto mb-8">
+                                        <button
+                                            onClick={handleCenterClick}
+                                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 rounded-full bg-indigo-500 text-3xl font-bold z-10 shadow-[0_0_30px_rgba(99,102,241,0.5)]"
+                                        >
+                                            {centerLetter}
+                                        </button>
+                                        
+                                        {wheelLetters.map((l, i) => {
+                                            const angle = (i * 360 / 7) - 90;
+                                            const rad = 100;
+                                            return (
+                                                <button
+                                                    key={i}
+                                                    onClick={() => handleLetterClick(l, i)}
+                                                    className="absolute w-14 h-14 rounded-full bg-slate-800 hover:bg-slate-700 text-xl font-bold transition-all"
+                                                    style={{
+                                                        left: `calc(50% + ${Math.cos(angle * Math.PI / 180) * rad}px - 28px)`,
+                                                        top: `calc(50% + ${Math.sin(angle * Math.PI / 180) * rad}px - 28px)`
+                                                    }}
+                                                >
+                                                    {l}
+                                                </button>
+                                            );
+                                        })}
+                                    </div>
+                                    
+                                    <div className="h-16 text-4xl font-bold mb-4">{currentWord}</div>
+                                    
+                                    <div className="flex gap-4 justify-center">
+                                        <button
+                                            onClick={clearCurrentWord}
+                                            className="btn-glass px-6 py-2"
+                                        >
+                                            Clear
+                                        </button>
+                                        <button
+                                            onClick={submitWord}
+                                            className="btn-primary px-8 py-2"
+                                        >
+                                            Submit
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="mt-8 flex flex-wrap gap-2 justify-center">
+                                        {foundWords.map((w, i) => (
+                                            <span
+                                                key={i}
+                                                className="bg-green-900/30 text-green-400 px-3 py-1 rounded-full text-sm"
+                                            >
+                                                {w}
+                                            </span>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Word Search UI */}
+                            {gameMode === 'wordsearch' && (
+                                <div className="flex flex-col md:flex-row gap-8 items-start justify-center">
+                                    <div
+                                        className="grid gap-1 mx-auto"
+                                        style={{ gridTemplateColumns: `repeat(${searchGrid.length}, minmax(0, 1fr))` }}
+                                    >
+                                        {searchGrid.map((row, r) =>
+                                            row.map((cell, c) => (
+                                                <div
+                                                    key={`${r}-${c}`}
+                                                    onClick={() => handleSearchCellClick(r, c)}
+                                                    className={`w-8 h-8 flex items-center justify-center text-sm font-bold cursor-pointer rounded ${
+                                                        selectedCells.some(sc => sc.row === r && sc.col === c)
+                                                            ? 'bg-indigo-500 text-white'
+                                                            : 'bg-slate-800 text-slate-300'
+                                                    }`}
+                                                >
+                                                    {cell}
+                                                </div>
+                                            ))
+                                        )}
+                                    </div>
+                                    
+                                    <div className="w-full md:w-48 glass p-4 rounded-xl">
+                                        <h3 className="font-bold mb-4 text-indigo-400">Words</h3>
+                                        <div className="flex flex-wrap gap-2">
+                                            {searchWords.map((w, i) => (
+                                                <span
+                                                    key={i}
+                                                    className={`text-sm ${
+                                                        foundSearchWords.includes(w)
+                                                            ? 'text-green-500 line-through'
+                                                            : 'text-slate-400'
+                                                    }`}
+                                                >
+                                                    {w}
+                                                </span>
+                                            ))}
+                                        </div>
+                                        <div className="flex gap-2 mt-4">
+                                            <button
+                                                onClick={checkSelectedWord}
+                                                className="btn-primary flex-1 py-2 text-sm"
+                                            >
+                                                Check
+                                            </button>
+                                            <button
+                                                onClick={() => setSelectedCells([])}
+                                                className="btn-glass flex-1 py-2 text-sm"
+                                            >
+                                                Clear
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            // Results Screen
+            if (gameState === 'results') {
+                const currentLeaderboard = 
+                    gameMode === 'speed' ? leaderboard :
+                    gameMode === 'memory' ? memoryLeaderboard :
+                    gameMode === 'race' ? raceLeaderboard :
+                    gameMode === 'sudoku' ? sudokuLeaderboard :
+                    gameMode === 'wordsearch' ? wordSearchLeaderboard :
+                    wordWheelLeaderboard;
+
+                const accuracy = questionsAnswered > 0 
+                    ? Math.round((correctAnswers / questionsAnswered) * 100) 
+                    : 0;
+
+                return (
+                    <div className="min-h-screen flex items-center justify-center p-4 relative">
+                        <div className="glow-bg"></div>
+                        
+                        <div className="text-center animate-fade-in max-w-4xl w-full">
+                            <div className="glass p-12 rounded-3xl border-indigo-500/20 mb-8">
+                                <div className="text-8xl mb-6">🏆</div>
+                                <h1 className="text-6xl font-black mb-2 gradient-text">GAME OVER</h1>
+                                <div className="text-9xl font-black text-white outline-text my-8">{score}</div>
+                                
+                                {/* Statistics Grid - Only for Speed Mode */}
+                                {gameMode === 'speed' && (
+                                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8 max-w-2xl mx-auto">
+                                        <div className="stat-card">
+                                            <div className="text-4xl mb-2">🔥</div>
+                                            <div className="text-3xl font-bold text-orange-400">{bestStreak}</div>
+                                            <div className="text-xs text-slate-400 mt-1">Best Streak</div>
+                                        </div>
+                                        <div className="stat-card">
+                                            <div className="text-4xl mb-2">✅</div>
+                                            <div className="text-3xl font-bold text-green-400">{correctAnswers}</div>
+                                            <div className="text-xs text-slate-400 mt-1">Correct</div>
+                                        </div>
+                                        <div className="stat-card">
+                                            <div className="text-4xl mb-2">📊</div>
+                                            <div className="text-3xl font-bold text-blue-400">{accuracy}%</div>
+                                            <div className="text-xs text-slate-400 mt-1">Accuracy</div>
+                                        </div>
+                                        <div className="stat-card">
+                                            <div className="text-4xl mb-2">📝</div>
+                                            <div className="text-3xl font-bold text-indigo-400">{questionsAnswered}</div>
+                                            <div className="text-xs text-slate-400 mt-1">Questions</div>
+                                        </div>
+                                    </div>
+                                )}
+                                
+                                <div className="flex gap-4 justify-center">
+                                    <button
+                                        onClick={() => startGame(difficulty)}
+                                        className="btn-primary px-8 py-3 text-lg"
+                                    >
+                                        Play Again
+                                    </button>
+                                    <button
+                                        onClick={() => setGameState('menu')}
+                                        className="btn-glass px-8 py-3 text-lg"
+                                    >
+                                        Menu
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            {currentLeaderboard.length > 0 && (
+                                <div className="glass rounded-3xl p-8 animate-fade-in">
+                                    <h3 className="text-2xl font-bold mb-4 text-left">Top Players</h3>
+                                    
+                                    <div className="space-y-2 max-h-64 overflow-y-auto pr-2">
+                                        {currentLeaderboard.slice(0, 10).map((entry, index) => (
+                                            <div
+                                                key={entry.id}
+                                                className="flex items-center justify-between p-3 rounded-lg bg-white/5"
+                                            >
+                                                <div className="flex items-center gap-3">
+                                                    <span className="text-slate-500 font-mono w-6">{index + 1}</span>
+                                                    <div>
+                                                        <div className="font-bold">{entry.userName}</div>
+                                                        {(entry.streak || entry.accuracy) && (
+                                                            <div className="text-xs text-slate-400 flex items-center gap-2 mt-1">
+                                                                {entry.streak && (
+                                                                    <span className="flex items-center gap-1">
+                                                                        <span>🔥</span>
+                                                                        <span className="text-orange-400">{entry.streak}</span>
+                                                                    </span>
+                                                                )}
+                                                                {entry.accuracy && (
+                                                                    <>
+                                                                        {entry.streak && <span>•</span>}
+                                                                        <span className="text-green-400">{entry.accuracy}%</span>
+                                                                    </>
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                </div>
+                                                <span className="text-indigo-400 font-bold">
+                                                    {gameMode === 'race' ? entry.time : entry.score}
+                                                </span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                );
+            }
+
+            return null;
+        };
+
+        ReactDOM.render(<SpeedMath />, document.getElementById('root'));
+    </script>
+</body>
+</html>
